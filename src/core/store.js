@@ -35,9 +35,8 @@ const APPS_FILE = path.join(DATA_DIR, 'apps.json');
 const SETTINGS_FILE = path.join(DATA_DIR, 'settings.json');
 
 const DEFAULT_SETTINGS = {
-  // 界面语言：auto = 跟随系统；zh / en / ru / vi / es / pt / ja / ko = 固定。
-  // 老用户升级时若配置里没有这个字段，会迁移成 zh（保持升级前的中文界面）。
-  uiLanguage: 'auto',
+  // Edición en español: usar español por defecto; el usuario puede cambiarlo en Ajustes.
+  uiLanguage: 'es',
   // 首次语言选择引导是否已处理：全新安装为 false，UI 首次打开弹出选择卡后置 true。
   uiLanguageSelected: true,
   adbPath: '',
@@ -280,16 +279,15 @@ const store = {
     const existing = readJson(SETTINGS_FILE, {});
     const s = deepMerge(DEFAULT_SETTINGS, existing);
     /**
-     * 界面语言迁移：设置文件里没有 uiLanguage 的是老用户，保持他们看到的
-     * 中文界面；全新安装（没有 settings.json）才默认 auto，按系统语言选。
-     * 非法值一律回落到中文，避免手改配置把界面搞成空白。
+     * Edición en español: si una instalación antigua no tiene uiLanguage, migrarla a es.
+     * Los valores explícitos elegidos por el usuario se conservan.
      */
     const VALID_LANGS = ['auto', 'zh', 'en', 'ru', 'vi', 'es', 'pt', 'ja', 'ko'];
     const freshInstall = !fs.existsSync(SETTINGS_FILE);
     if (existing.uiLanguage === undefined) {
-      s.uiLanguage = freshInstall ? 'auto' : 'zh';
+      s.uiLanguage = 'es';
     } else if (!VALID_LANGS.includes(s.uiLanguage)) {
-      s.uiLanguage = 'zh';
+      s.uiLanguage = 'es';
     }
     /**
      * 首次语言选择引导：全新安装且用户还没选过语言时置 false，UI 会在第一次
