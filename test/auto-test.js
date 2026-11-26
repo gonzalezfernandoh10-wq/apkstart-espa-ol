@@ -2975,19 +2975,19 @@ const { AdbClient, friendlyInstallError, friendlyLaunchError } = require('../src
       // 全新安装：没有 settings.json → uiLanguageSelected=false，需要弹语言卡
       const fresh = store.getSettings();
       assert(fresh.uiLanguageSelected === false, '全新安装应标记「需选语言」');
-      assert(fresh.uiLanguage === 'auto', '全新安装语言应为 auto');
+      assert(fresh.uiLanguage === 'es', '西班牙语版本的全新安装默认应为 es');
       // 用户选完保存：置 true
       store.saveSettings({ uiLanguage: 'ja', uiLanguageSelected: true });
       delete require.cache[storePath];
       const after = require('../src/core/store').getSettings();
       assert(after.uiLanguageSelected === true, '选完应标记已处理，不再弹');
       assert(after.uiLanguage === 'ja', '选中的语言应持久化');
-      // 模拟老用户：配置文件存在但没有 uiLanguageSelected / uiLanguage → 中文、不弹
+      // 模拟老用户：配置文件存在但没有 uiLanguageSelected / uiLanguage → 西班牙语、不弹
       const settingsFile = path.join(store.DATA_DIR, 'settings.json');
       fs2.writeFileSync(settingsFile, JSON.stringify({ adbPath: 'x' }), 'utf8');
       delete require.cache[storePath];
       const legacy = require('../src/core/store').getSettings();
-      assert(legacy.uiLanguage === 'zh', '老用户应保持中文');
+      assert(legacy.uiLanguage === 'es', '旧安装升级后应默认使用西班牙语');
       assert(legacy.uiLanguageSelected === true, '老用户不应被语言卡打扰');
     } finally {
       delete require.cache[storePath];
