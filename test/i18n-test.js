@@ -112,6 +112,12 @@ for (const lang of ['ru', 'vi', 'es', 'pt', 'ja', 'ko']) {
     }
   });
 }
+test('西班牙语界面优先使用西语，并以英文补齐未翻译条目', () => {
+  i18n.setLanguage('es');
+  assert(i18n.t('设置') === 'Configuración', '设置应翻译为 Configuración');
+  assert(i18n.t('运行状态') === 'Estado del entorno', '运行状态应有西语译文');
+  assert(i18n.t('配置硬件加速与网络') === 'Configure hardware acceleration and network', '缺少西语时应回退英文，而不是中文');
+});
 test('多语种下缺失译文回退中文', () => {
   i18n.setLanguage('es');
   assert(i18n.t('这是一条绝不会出现在词典里的文案') === '这是一条绝不会出现在词典里的文案', '应回退中文');
