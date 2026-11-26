@@ -6,7 +6,7 @@
  * - 源码里的界面文案仍然是中文（CONTRIBUTING 的历史约定），词典以「中文原文」为 key，
  *   只在**显示层**翻译。逻辑判断、正则、adb/emulator 命令、包名、路径、配置键、
  *   IPC 通道一律不经过这里，因此翻译不会改变程序行为。
- * - 默认中文：没有词典条目时原样返回中文；非中文条目缺失时逐条回退中文。
+ * - 默认中文；西班牙语优先使用西语词典，缺少的条目回退英文，未收录的文案再保留原文。
  * - 带插值的文案（如「已安装 {n} 个应用」）支持精确查表与按骨架反查两种方式，
  *   动态拼出来的字符串也能命中。
  *
@@ -99,7 +99,8 @@ function resolveLanguage(setting, systemLanguages) {
 function setLanguage(next) {
   const n = normalizeLang(next);
   lang = n || 'zh';
-  dict = DICTS[lang] || {};
+  // La traducción española está en progreso: usar inglés como respaldo evita mostrar cadenas mezcladas con chino.
+  dict = lang === 'es' ? { ...EN, ...DICTS.es } : (DICTS[lang] || {});
   patterns = null;
   literalKeys = null;
   patternCache.clear();
